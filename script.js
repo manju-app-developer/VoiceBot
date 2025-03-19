@@ -1,9 +1,10 @@
-// ================================
-// 🌍 Multi-Language AI Chatbot 🚀
-// ================================
 
-// 🚀 Free AI API (OpenRouter.ai) - Get API key from https://openrouter.ai
-const OPENROUTER_API_KEY = "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";
+/// ==================================
+// 🌍 Multi-Language AI Chatbot 🚀
+// ==================================
+
+// 🚀 OpenAI API Key (Use your own)
+const OPENAI_API_KEY = "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"; // Replace with your OpenAI API key
 
 // 🌐 Free Translation API (LibreTranslate) - No API Key Required
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
@@ -42,7 +43,7 @@ async function translateToEnglish(text, lang) {
     if (lang === "en") return text; // No need to translate
 
     try {
-        let response = await fetch(`${LIBRETRANSLATE_URL}`, {
+        let response = await fetch(LIBRETRANSLATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ q: text, source: lang, target: "en", format: "text" })
@@ -55,22 +56,28 @@ async function translateToEnglish(text, lang) {
     }
 }
 
-// 🤖 Get AI Response using OpenRouter API (Free)
+// 🤖 Get AI Response using OpenAI API
 async function getAIResponse(userText) {
     try {
-        let response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        let response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Authorization": `Bearer ${OPENAI_API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo", // Free model
+                model: "gpt-3.5-turbo",
                 messages: [{ role: "user", content: userText }]
             })
         });
 
         let data = await response.json();
+
+        if (data.error) {
+            console.error("OpenAI API Error:", data.error.message);
+            return "API Error: " + data.error.message;
+        }
+
         return data.choices?.[0]?.message?.content || "I couldn't understand that. Can you try again?";
     } catch (error) {
         console.error("AI API Error:", error);
@@ -83,7 +90,7 @@ async function translateToUserLanguage(text, lang) {
     if (lang === "en") return text; // No need to translate
 
     try {
-        let response = await fetch(`${LIBRETRANSLATE_URL}`, {
+        let response = await fetch(LIBRETRANSLATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ q: text, source: "en", target: lang, format: "text" })
