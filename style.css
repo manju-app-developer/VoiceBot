@@ -1,15 +1,107 @@
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background: #121212;
+    color: white;
     text-align: center;
-    margin: 50px;
+    margin: 0;
+    padding: 0;
 }
-button {
-    padding: 10px 20px;
+
+/* Chat Container */
+.chat-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Box */
+.chat-box {
+    height: 300px;
+    overflow-y: auto;
+    background: #2a2a2a;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: left;
+    scrollbar-width: thin;
+}
+
+/* Messages */
+.user-message, .bot-message {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    max-width: 80%;
+    display: inline-block;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* User Message */
+.user-message {
+    background: #ff5722;
+    color: white;
+    text-align: right;
+    float: right;
+    clear: both;
+}
+
+/* Bot Message */
+.bot-message {
+    background: #333;
+    color: white;
+    text-align: left;
+    float: left;
+    clear: both;
+}
+
+/* Input Section */
+.input-container {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+input, button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
     font-size: 16px;
+}
+
+input {
+    flex: 1;
+    background: #222;
+    color: white;
+    outline: none;
+}
+
+button {
+    background: #ff5722;
+    color: white;
     cursor: pointer;
 }
-#response {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
+
+button:hover {
+    background: #ff784e;
+}
+
+/* Typing Animation */
+.typing {
+    font-style: italic;
+    color: #bbb;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
