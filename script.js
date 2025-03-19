@@ -35,7 +35,7 @@ async function sendMessage() {
     const response = await fetch("https://api.deepai.org/api/text-generator", {
         method: "POST",
         headers: { 
-            "api-key": "YOUR_DEEPAI_API_KEY", 
+            "api-key": "5bc41153-7035-49ae-91c6-e415dfa74ef6'", 
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ text: userInput })
