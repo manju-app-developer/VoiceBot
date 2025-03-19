@@ -1,41 +1,103 @@
-// Speech Recognition (Understands Multiple Languages)
+// ================================
+// 🌍 Multi-Language AI Chatbot 🚀
+// ================================
+
+// 🚀 Free AI API (OpenRouter.ai) - Get API key from https://openrouter.ai
+const OPENROUTER_API_KEY = "YOUR_FREE_OPENROUTER_API_KEY";
+
+// 🌐 Free Translation API (LibreTranslate) - No API Key Required
+const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
+
+// 🎤 Speech Recognition (Understands Multiple Languages)
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = "auto"; // Detects any language automatically
+recognition.lang = "auto"; // Auto-detects language
 recognition.onresult = (event) => {
     document.getElementById("user-input").value = event.results[0][0].transcript;
     sendMessage();
 };
 
-// Start Voice Recognition
+// 🔊 Start Voice Recognition
 function startVoiceRecognition() {
     recognition.start();
 }
 
-// Handle Enter Key Press
-function handleKeyPress(event) {
-    if (event.key === "Enter") sendMessage();
+// 🎯 Detect Language using LibreTranslate API (Free)
+async function detectLanguage(text) {
+    try {
+        let response = await fetch(`${LIBRETRANSLATE_URL}/detect`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ q: text })
+        });
+        let data = await response.json();
+        return data[0]?.language || "en"; // Default to English
+    } catch (error) {
+        console.error("Language detection failed:", error);
+        return "en";
+    }
 }
 
-// AI Responses in Multiple Languages
-const responses = {
-    "hello": { en: "Hello! 😊", es: "¡Hola! 😊", fr: "Bonjour! 😊", hi: "नमस्ते! 😊" },
-    "how are you": { en: "I'm great! How about you?", es: "¡Estoy bien! ¿Y tú?", fr: "Je vais bien! Et toi?", hi: "मैं अच्छा हूँ! आप कैसे हैं?" },
-    "what is your name": { en: "I am your AI chatbot! 🤖", es: "¡Soy tu chatbot de IA! 🤖", fr: "Je suis ton chatbot IA! 🤖", hi: "मैं आपका एआई चैटबॉट हूँ! 🤖" },
-    "bye": { en: "Goodbye! Have a great day! 👋", es: "¡Adiós! ¡Que tengas un gran día! 👋", fr: "Au revoir! Passe une bonne journée! 👋", hi: "अलविदा! आपका दिन शुभ हो! 👋" },
-    "default": { en: "I'm still learning! Can you ask something else?", es: "¡Todavía estoy aprendiendo! ¿Puedes preguntar otra cosa?", fr: "J'apprends encore! Peux-tu demander autre chose?", hi: "मैं अभी भी सीख रहा हूँ! क्या आप कुछ और पूछ सकते हैं?" }
-};
+// 🌎 Translate Text to English (For AI Processing)
+async function translateToEnglish(text, lang) {
+    if (lang === "en") return text; // No need to translate
 
-// Detect Language
-function detectLanguage(text) {
-    if (/^[a-zA-Z\s]+$/.test(text)) return "en";
-    if (/^[\u0900-\u097F\s]+$/.test(text)) return "hi"; // Hindi
-    if (/^[\u00C0-\u017F\s]+$/.test(text)) return "fr"; // French
-    if (/^[\u00E1-\u00FC\s]+$/.test(text)) return "es"; // Spanish
-    return "en"; // Default to English
+    try {
+        let response = await fetch(`${LIBRETRANSLATE_URL}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ q: text, source: lang, target: "en", format: "text" })
+        });
+        let data = await response.json();
+        return data.translatedText || text;
+    } catch (error) {
+        console.error("Translation to English failed:", error);
+        return text;
+    }
 }
 
-// Send Message
-function sendMessage() {
+// 🤖 Get AI Response using OpenRouter API (Free)
+async function getAIResponse(userText) {
+    try {
+        let response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo", // Free model
+                messages: [{ role: "user", content: userText }]
+            })
+        });
+
+        let data = await response.json();
+        return data.choices?.[0]?.message?.content || "I couldn't understand that. Can you try again?";
+    } catch (error) {
+        console.error("AI API Error:", error);
+        return "Sorry, I'm currently unavailable. Try again later!";
+    }
+}
+
+// 🌍 Translate AI Response Back to User's Language
+async function translateToUserLanguage(text, lang) {
+    if (lang === "en") return text; // No need to translate
+
+    try {
+        let response = await fetch(`${LIBRETRANSLATE_URL}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ q: text, source: "en", target: lang, format: "text" })
+        });
+        let data = await response.json();
+        return data.translatedText || text;
+    } catch (error) {
+        console.error("Translation back to user language failed:", error);
+        return text;
+    }
+}
+
+// 📤 Send User Message and Get AI Response
+async function sendMessage() {
     let userInput = document.getElementById("user-input").value.trim();
     if (!userInput) return;
 
@@ -46,22 +108,33 @@ function sendMessage() {
     document.getElementById("user-input").value = "";
 
     // Detect Language
-    let lang = detectLanguage(userInput);
-    
-    // Get Response in the Same Language
-    let response = responses[userInput.toLowerCase()]?.[lang] || responses["default"][lang];
+    let lang = await detectLanguage(userInput);
 
-    // Append Bot Message
+    // Translate to English for AI Processing
+    let englishText = await translateToEnglish(userInput, lang);
+
+    // Get AI Response in English
+    let aiResponse = await getAIResponse(englishText);
+
+    // Translate AI Response to User's Language
+    let finalResponse = await translateToUserLanguage(aiResponse, lang);
+
+    // Append AI Response
     setTimeout(() => {
-        chatBox.innerHTML += `<p class="bot-message">${response}</p>`;
+        chatBox.innerHTML += `<p class="bot-message">${finalResponse}</p>`;
         chatBox.scrollTop = chatBox.scrollHeight;
-        speak(response, lang); // AI Speaks
+        speak(finalResponse, lang); // AI Speaks in Detected Language
     }, 500);
 }
 
-// AI Text-to-Speech (Speaks in Same Language)
+// 🔊 AI Speaks in User's Language
 function speak(text, lang) {
     let speech = new SpeechSynthesisUtterance(text);
     speech.lang = lang;
     window.speechSynthesis.speak(speech);
+}
+
+// 🖱️ Handle Enter Key Press
+function handleKeyPress(event) {
+    if (event.key === "Enter") sendMessage();
 }
