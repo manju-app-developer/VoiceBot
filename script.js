@@ -3,7 +3,7 @@
 // ================================
 
 // 🚀 Free AI API (OpenRouter.ai) - Get API key from https://openrouter.ai
-const OPENROUTER_API_KEY = "YOUR_FREE_OPENROUTER_API_KEY";
+const OPENROUTER_API_KEY = "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";
 
 // 🌐 Free Translation API (LibreTranslate) - No API Key Required
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
