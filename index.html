@@ -6,25 +6,34 @@
     <title>AI Chatbot - Multi-Language</title>
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Theme Toggle -->
+    <!-- Theme Toggle Button -->
     <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
 
-    <!-- Chat Container -->
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>AI Chatbot 🤖</h2>
-        </div>
+    <!-- Chat App Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="chat-header">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h2>ZenBot</h2>
+            <div class="profile-pic">Z</div>
+        </header>
+
+        <!-- Chat Messages Box -->
         <div class="chat-box" id="chat-box"></div>
 
         <!-- Input Area -->
-        <div class="chat-input">
+        <div class="chat-footer">
             <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">➤</button>
-            <button class="voice-btn" onclick="startVoiceRecognition()">🎤</button>
+            <button onclick="sendMessage()" class="send-btn">➤</button>
+            <button onclick="startVoiceRecognition()" class="voice-btn">🎤</button>
         </div>
+        
     </div>
 
 </body>
