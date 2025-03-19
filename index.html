@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multilingual AI Chatbot</title>
+    <title>AI Chatbot - Multi-Language</title>
     <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+
+    <!-- Chat Container -->
     <div class="chat-container">
-        <h1>🌍 AI Chatbot (Multilingual, No API)</h1>
-        <div class="chat-box" id="chat-box">
-            <p class="bot-message">Hello! Speak or type a message in any language. 🎤</p>
+        <div class="chat-header">
+            <h2>AI Chatbot 🤖</h2>
         </div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
-            <button id="voice-btn" onclick="startVoiceRecognition()">🎤 Speak</button>
+        <div class="chat-box" id="chat-box"></div>
+
+        <!-- Input Area -->
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">➤</button>
+            <button class="voice-btn" onclick="startVoiceRecognition()">🎤</button>
         </div>
     </div>
-    <script src="script.js"></script>
+
 </body>
 </html>
