@@ -1,27 +1,63 @@
-const huggingFaceAPI = "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill";
+// Speech Recognition Setup
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = "en-US";
+recognition.onresult = (event) => {
+    document.getElementById("user-input").value = event.results[0][0].transcript;
+    sendMessage();
+};
 
-function startListening() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
+// Function to Start Voice Recognition
+function startVoiceRecognition() {
     recognition.start();
-
-    recognition.onresult = function(event) {
-        let userText = event.results[0][0].transcript;
-        document.getElementById("response").innerText = "You: " + userText;
-        getAIResponse(userText);
-    };
 }
 
-async function getAIResponse(userText) {
-    const response = await fetch(huggingFaceAPI, {
+// Function to Handle Enter Key
+function handleKeyPress(event) {
+    if (event.key === "Enter") sendMessage();
+}
+
+// Function to Send Message
+async function sendMessage() {
+    let userInput = document.getElementById("user-input").value.trim();
+    if (!userInput) return;
+
+    let chatBox = document.getElementById("chat-box");
+
+    // Append User Message
+    chatBox.innerHTML += `<p class="user-message">${userInput}</p>`;
+    document.getElementById("user-input").value = "";
+
+    // Typing Indicator
+    chatBox.innerHTML += `<p class="bot-message typing">Bot is typing...</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Fetch AI Response
+    const response = await fetch("https://api.deepai.org/api/text-generator", {
         method: "POST",
-        headers: { "Authorization": "Bearer YOUR_HUGGINGFACE_API_KEY", "Content-Type": "application/json" },
-        body: JSON.stringify({ inputs: userText }),
+        headers: { 
+            "api-key": "YOUR_DEEPAI_API_KEY", 
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: userInput })
     });
 
     const data = await response.json();
-    let botReply = data.generated_text || "Sorry, I didn't understand.";
-    
-    document.getElementById("response").innerText += "\nBot: " + botReply;
-    responsiveVoice.speak(botReply, "UK English Male");
+    let botReply = data.output || "I didn't understand that.";
+
+    // Remove Typing Indicator & Show Bot Message
+    document.querySelector(".typing").remove();
+    chatBox.innerHTML += `<p class="bot-message">${botReply}</p>`;
+
+    // Scroll to Bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Speak Response
+    speak(botReply);
+}
+
+// Text-to-Speech Function
+function speak(text) {
+    let speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
 }
