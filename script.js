@@ -3,7 +3,7 @@
 // ======================================
 
 // 🚀 OpenAI API Key (Use your own)
-const OPENAI_API_KEY = "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"; // Replace with your OpenAI API key
+const OPENAI_API_KEY = "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"; // Replace with your OpenAI API key
 
 // 🌐 Free Translation API (LibreTranslate) - No API Key Required
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
