@@ -1,7 +1,6 @@
-
-/// ==================================
+// ======================================
 // 🌍 Multi-Language AI Chatbot 🚀
-// ==================================
+// ======================================
 
 // 🚀 OpenAI API Key (Use your own)
 const OPENAI_API_KEY = "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"; // Replace with your OpenAI API key
@@ -9,9 +8,9 @@ const OPENAI_API_KEY = "sk-or-v1-b0083e91c77c0b2567b0871a74b58011973cebf4e96cdbf
 // 🌐 Free Translation API (LibreTranslate) - No API Key Required
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
 
-// 🎤 Speech Recognition (Understands Multiple Languages)
+// 🎤 Speech Recognition Setup
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = "auto"; // Auto-detects language
+recognition.lang = "auto"; 
 recognition.onresult = (event) => {
     document.getElementById("user-input").value = event.results[0][0].transcript;
     sendMessage();
@@ -22,44 +21,43 @@ function startVoiceRecognition() {
     recognition.start();
 }
 
-// 🎯 Detect Language using LibreTranslate API (Free)
+// 🎯 Detect Language (Optimized)
 async function detectLanguage(text) {
     try {
-        let response = await fetch(`${LIBRETRANSLATE_URL}/detect`, {
+        const response = await fetch(`${LIBRETRANSLATE_URL}/detect`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ q: text })
         });
-        let data = await response.json();
-        return data[0]?.language || "en"; // Default to English
+        const data = await response.json();
+        return data[0]?.language || "en"; 
     } catch (error) {
-        console.error("Language detection failed:", error);
+        console.error("Language detection error:", error);
         return "en";
     }
 }
 
-// 🌎 Translate Text to English (For AI Processing)
+// 🌎 Translate to English (Only if needed)
 async function translateToEnglish(text, lang) {
-    if (lang === "en") return text; // No need to translate
-
+    if (lang === "en") return text; 
     try {
-        let response = await fetch(LIBRETRANSLATE_URL, {
+        const response = await fetch(LIBRETRANSLATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ q: text, source: lang, target: "en", format: "text" })
         });
-        let data = await response.json();
+        const data = await response.json();
         return data.translatedText || text;
     } catch (error) {
-        console.error("Translation to English failed:", error);
+        console.error("Translation to English error:", error);
         return text;
     }
 }
 
-// 🤖 Get AI Response using OpenAI API
+// 🤖 Get AI Response from OpenAI (Improved API Call)
 async function getAIResponse(userText) {
     try {
-        let response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${OPENAI_API_KEY}`,
@@ -71,77 +69,76 @@ async function getAIResponse(userText) {
             })
         });
 
-        let data = await response.json();
+        const data = await response.json();
 
         if (data.error) {
             console.error("OpenAI API Error:", data.error.message);
-            return "API Error: " + data.error.message;
+            return "Error: " + data.error.message;
         }
 
-        return data.choices?.[0]?.message?.content || "I couldn't understand that. Can you try again?";
+        return data.choices?.[0]?.message?.content || "I couldn't understand that.";
     } catch (error) {
         console.error("AI API Error:", error);
-        return "Sorry, I'm currently unavailable. Try again later!";
+        return "Sorry, AI is currently unavailable. Try again later!";
     }
 }
 
-// 🌍 Translate AI Response Back to User's Language
+// 🌍 Translate AI Response Back (Only if needed)
 async function translateToUserLanguage(text, lang) {
-    if (lang === "en") return text; // No need to translate
-
+    if (lang === "en") return text; 
     try {
-        let response = await fetch(LIBRETRANSLATE_URL, {
+        const response = await fetch(LIBRETRANSLATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ q: text, source: "en", target: lang, format: "text" })
         });
-        let data = await response.json();
+        const data = await response.json();
         return data.translatedText || text;
     } catch (error) {
-        console.error("Translation back to user language failed:", error);
+        console.error("Translation back error:", error);
         return text;
     }
 }
 
-// 📤 Send User Message and Get AI Response
+// 📤 Send Message and Get AI Response
 async function sendMessage() {
-    let userInput = document.getElementById("user-input").value.trim();
+    const userInput = document.getElementById("user-input").value.trim();
     if (!userInput) return;
 
-    let chatBox = document.getElementById("chat-box");
+    const chatBox = document.getElementById("chat-box");
 
     // Append User Message
     chatBox.innerHTML += `<p class="user-message">${userInput}</p>`;
     document.getElementById("user-input").value = "";
 
     // Detect Language
-    let lang = await detectLanguage(userInput);
+    const lang = await detectLanguage(userInput);
 
-    // Translate to English for AI Processing
-    let englishText = await translateToEnglish(userInput, lang);
+    // Translate to English (Only if needed)
+    const englishText = await translateToEnglish(userInput, lang);
 
-    // Get AI Response in English
-    let aiResponse = await getAIResponse(englishText);
+    // Get AI Response
+    const aiResponse = await getAIResponse(englishText);
 
-    // Translate AI Response to User's Language
-    let finalResponse = await translateToUserLanguage(aiResponse, lang);
+    // Translate AI Response Back
+    const finalResponse = await translateToUserLanguage(aiResponse, lang);
 
     // Append AI Response
     setTimeout(() => {
         chatBox.innerHTML += `<p class="bot-message">${finalResponse}</p>`;
         chatBox.scrollTop = chatBox.scrollHeight;
-        speak(finalResponse, lang); // AI Speaks in Detected Language
+        speak(finalResponse, lang);
     }, 500);
 }
 
 // 🔊 AI Speaks in User's Language
 function speak(text, lang) {
-    let speech = new SpeechSynthesisUtterance(text);
+    const speech = new SpeechSynthesisUtterance(text);
     speech.lang = lang;
     window.speechSynthesis.speak(speech);
 }
 
 // 🖱️ Handle Enter Key Press
-function handleKeyPress(event) {
+document.getElementById("user-input").addEventListener("keypress", (event) => {
     if (event.key === "Enter") sendMessage();
-}
+});
