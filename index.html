@@ -1,153 +1,40 @@
-/* 🌙 General Styling */
-body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-    transition: 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot - Multi-Language</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
 
-/* 🌎 Theme Variables */
-:root {
-    --bg-color: #15202b;
-    --text-color: #ffffff;
-    --chat-bg: #192734;
-    --chat-bubble-user: #1da1f2;
-    --chat-bubble-bot: #242d34;
-    --input-bg: #253341;
-    --send-btn: #1da1f2;
-}
-.light-theme {
-    --bg-color: #ffffff;
-    --text-color: #15202b;
-    --chat-bg: #f0f2f5;
-    --chat-bubble-user: #007bff;
-    --chat-bubble-bot: #e5e5e5;
-    --input-bg: #f8f9fa;
-    --send-btn: #007bff;
-}
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
 
-/* 🏠 Chat App Container */
-.app-container {
-    width: 100%;
-    max-width: 450px;
-    background: var(--chat-bg);
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
+    <!-- Chat App Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="chat-header">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h2>ZenBot</h2>
+            <div class="profile-pic">Z</div>
+        </header>
 
-/* 🔝 Header */
-.chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    background: var(--chat-bg);
-    color: var(--text-color);
-    font-weight: bold;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
+        <!-- Chat Messages Box -->
+        <div class="chat-box" id="chat-box"></div>
 
-.logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
+        <!-- Input Area -->
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" class="send-btn">➤</button>
+            <button onclick="startVoiceRecognition()" class="voice-btn">🎤</button>
+        </div>
+        
+    </div>
 
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    background: var(--send-btn);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-/* 💬 Chat Box */
-.chat-box {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* 🎤 Chat Bubbles */
-.user-message, .bot-message {
-    max-width: 75%;
-    padding: 10px 15px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.4;
-    word-wrap: break-word;
-    display: inline-block;
-}
-
-.user-message {
-    background: var(--chat-bubble-user);
-    color: #fff;
-    align-self: flex-end;
-}
-
-.bot-message {
-    background: var(--chat-bubble-bot);
-    color: var(--text-color);
-    align-self: flex-start;
-}
-
-/* 🔥 Input Section */
-.chat-footer {
-    display: flex;
-    padding: 10px;
-    background: var(--input-bg);
-    border-top: 2px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-}
-
-.chat-footer input {
-    flex: 1;
-    padding: 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    background: var(--bg-color);
-    color: var(--text-color);
-}
-
-.send-btn, .voice-btn {
-    background: var(--send-btn);
-    border: none;
-    color: white;
-    font-size: 16px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.send-btn:hover, .voice-btn:hover {
-    opacity: 0.8;
-}
-
-/* 🌙 Theme Toggle */
-.theme-toggle {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-}
+</body>
+</html>
